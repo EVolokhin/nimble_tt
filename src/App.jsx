@@ -1,98 +1,87 @@
-/* eslint-disable max-len */
 /* eslint-disable no-console */
-import React, { useRef, useState } from 'react';
-import moment from 'moment';
+/* eslint-disable no-unused-vars */
+/* eslint-disable max-len */
 
+import React, { useState } from 'react';
+import moment from 'moment';
+import { Timer } from './components/timer';
+import addPic from './style/icons/play_circle_filled-black-48dp.svg';
+import { useLocalStorage } from './components/localStorage';
 import './App.scss';
 
 export const App = () => {
-  const [timer, setTimer] = useState({
-    time: 0,
-    active: false,
-    start: 0,
-  });
+  const [timersList, setTimersList] = useLocalStorage('timersList');
+  const [timerName, setTimerName] = useState('');
 
-  console.log(timer);
-
-  const intervalRef = useRef();
-
-  const startTimer = () => {
-    console.log('start button');
-    setTimer(prev => ({
-      ...prev,
-      start: moment() - prev.time,
-    }));
-
-    const timeCounter = setInterval(() => {
-      setTimer(prev => ({
-        ...prev,
-        time: moment() - prev.start,
-        active: true,
-      }));
-    }, 1000);
-
-    intervalRef.current = timeCounter;
+  const handleName = (event) => {
+    setTimerName(event.target.value);
   };
 
-  const stopTimer = () => {
-    console.log('stop button');
-    clearInterval(intervalRef.current);
-    setTimer(prev => ({
-      ...prev,
-      active: false,
-    }));
-  };
-
-  const deleteTimer = () => {
-    console.log('delete button');
-    setTimer(prev => ({
-      ...prev,
+  const addTimer = () => {
+    const newTimer = {
+      name: timerName || String(+moment()),
       time: 0,
-      active: false,
-    }));
+      active: true,
+      start: +moment(),
+      // start: 0,
+      id: +moment(),
+    };
+
+    setTimersList([newTimer, ...timersList]);
+    setTimerName('');
   };
 
-  const convertTime = () => {
-    const seconds = moment.duration(timer.time, 'milliseconds');
-    const hours = (Math.floor(seconds.asHours()) < 10)
-      ? `0${Math.floor(seconds.asHours())}`
-      : Math.floor(seconds.asHours());
+  const deleteTimer = (id) => {
+    const deleteIndex = timersList.findIndex(timerObj => timerObj.id === id);
+    const newList = [...timersList];
 
-    return `${hours}:${moment.utc(timer.time).format('mm:ss')}`;
+    newList.splice(deleteIndex, 1);
+
+    setTimersList(newList);
+  };
+
+  const onEnter = (event) => {
+    if (event.key === 'Enter') {
+      addTimer();
+    }
   };
 
   return (
-    <div className="timer">
-      <h3>
-        {`TIMER: ${convertTime()}`}
-      </h3>
-
-      {!timer.active
-      && (
-        <button
-          type="button"
-          onClick={startTimer}
-        >
-          start
-        </button>
-      )}
-
-      {timer.active
-      && (
-        <button
-          type="button"
-          onClick={stopTimer}
-        >
-          pause
-        </button>
-      )}
-
+    <div>
+      <input
+        type="text"
+        value={timerName}
+        onChange={handleName}
+        onKeyPress={onEnter}
+      />
       <button
         type="button"
-        onClick={deleteTimer}
+        onClick={addTimer}
       >
-        delete
+        <img src={addPic} alt="add timer" />
       </button>
+
+      {timersList.map((timerObj, ind) => {
+        const {
+          name,
+          time,
+          active,
+          start,
+          id,
+        } = timerObj;
+
+        return (
+          <Timer
+            name={name}
+            time={time}
+            active={active}
+            start={start}
+            id={id}
+            deleteTimer={deleteTimer}
+            key={id}
+          />
+        );
+      })}
     </div>
   );
 };
