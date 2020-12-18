@@ -1,4 +1,4 @@
-@import './components/timer.scss';
+// @import './components/timer.scss';
 
 *, *::before, *::after {
   box-sizing: border-box;
@@ -12,4 +12,10 @@ body  {
 .wrapper {
   padding-left: calc(50% - 280px);
   padding-right: calc(50% - 280px);
+  
+  @media all and (max-width: 560px) {
+    padding: 0;
+  }
+
 }
+

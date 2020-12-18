@@ -101,10 +101,16 @@ export const Timer = ({
     return `${hours}:${moment.utc(timer.time).format('mm:ss')}`;
   };
 
+  // setting active/paused class for timer
+  const classContainer = (timer.active)
+    ? 'timer__container active'
+    : 'timer__container';
+
   return (
-    <div className="timer__container">
+    <div className={classContainer}>
       <h3 className="timer__header">
-        {`${timer.name}: ${convertTime()}`}
+        <span className="timer__title">{timer.name}</span>
+        <span>{convertTime()}</span>
       </h3>
 
       {!timer.active

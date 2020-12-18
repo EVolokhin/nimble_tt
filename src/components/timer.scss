@@ -3,25 +3,129 @@
   flex-direction: column;
   align-items: center;
   padding-top: 50px;
+  padding-bottom: 40px;
   width: 560px;
 
-  border: 2px solid black;
+  border: 2px solid grey;
+  border-radius: 20px 20px 20px 20px;
+  background-color: #3E576B;
 
-  &__set {}
-  &__name {}
-  &__add {}
-  &__container {
-    background-color: yellow;
+  &__set {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 50px;
+    padding-right: 2px;
+    border: thick double #AA7BC1;
+    border-radius: 35px 35px 35px 35px;
+
   }
-  &__header {}
+  &__name {
+    padding-left: 20px;
+    border: none;
+    color: #E74F52;
+    border-radius: 30px 30px 30px 30px;
+    font-size: 18px;
+    background-color: inherit;
+  }
+
+  &__name:focus {
+    outline: none;
+  }
+
+  &__add {
+    border: none;
+    padding: 0;
+    border-radius: 50%;
+    background-color: inherit;
+    align-content: center;
+    justify-content: center;
+  }
+
+  &__add img {
+    height: 100%;
+  }
+
+  &__add:focus {
+    outline: none;
+  }
+
+  &__container {
+    display: flex;
+    padding: 0 20px;
+    margin-bottom: 10px;
+    color: #757575;
+    background-color: #EFBE43;
+    border-radius: 30px 30px 30px 30px;
+    transition: transform 500ms, color 1000ms, background-color 1000ms;
+
+    animation-name: timer;
+    animation-duration: 2s;
+  }
+
+  @keyframes timer {
+    from {opacity: 0;}
+    to {opacity: 100;}
+  }
+
+  &__container.active {
+   background-color:#9AD045;
+   color:#E74F52;
+   transform: scale(1.1);
+   box-shadow: 0 0 10px lightblue;
+  }
+
+  &__header {
+    display: flex;
+    margin-right: 50px;
+  }
+
+  &__title {
+    margin-right: 50px;
+    width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  } 
+
   &__button {
     border: none;
     border-radius: 50%;
     background-color: inherit;
   }
+
   &__button:focus {
     outline: none;
   }
 
-  &__image {}
+  &__button img {
+    border-radius: 50%;
+  }
+
+  @media all and (max-width: 560px) {
+    & {
+      width: 100vw;
+    }
+
+    &__container {
+      display: flex;
+      align-items: center;
+      padding: 10px 10px;
+      margin: 0;
+      width: 85vw;
+    }
+
+    &__header {
+      margin: 0;
+    }
+
+    &__title {
+      transform: scale(0.85);
+      margin: 0;
+      width: 100px;
+    } 
+
+    &__button {
+      transform: scale(0.85);
+      margin: 0;
+    }
+  }
 }
