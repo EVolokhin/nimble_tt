@@ -1,40 +1,67 @@
 import React, { useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import PropTypes from 'prop-types';
+
 import pausePic from '../style/icons/pause_circle_outline-black-48dp.svg';
 import playPic from '../style/icons/play_circle_outline-black-48dp.svg';
 import deletePic from '../style/icons/highlight_off-black-48dp.svg';
 
+import './timer.scss';
+
 export const Timer = ({
   name,
-  time,
-  active,
-  start,
   id,
   deleteTimer,
 }) => {
-  const [timer, setTimer] = useState({
-    name,
-    time,
-    active,
-    start,
-    id,
-  });
+  // if timer excist we take the data from local storage
+  // if no setting the new object
+
+  const initialValue = localStorage.getItem(`${id}`)
+    ? JSON.parse(localStorage.getItem(`${id}`))
+    : {
+      name,
+      time: 0,
+      active: true,
+      start: +moment(),
+      id,
+    };
+
+  const [timer, setTimer] = useState(initialValue);
 
   // for ability to clear Interval
   const intervalRef = useRef();
 
+  // updating localStorage when timer buttons play/pause onClick
+  const updateStorage = (key) => {
+    const udpadeTimer = { ...timer };
+
+    (key === 'play') ? udpadeTimer.active = true : udpadeTimer.active = false;
+
+    localStorage.setItem(`${id}`, JSON.stringify(udpadeTimer));
+  };
+
   const startTimer = () => {
-    setTimer(prev => ({
-      ...prev,
-      start: moment() - prev.time,
-    }));
+    setTimer((prev) => {
+      if (prev.active) {
+        return {
+          ...prev,
+          time: moment() - prev.start,
+        };
+      }
+
+      return {
+        ...prev,
+        start: moment() - prev.time,
+        active: true,
+      };
+    });
+
+    updateStorage('play');
 
     const timeCounter = setInterval(() => {
       setTimer(prev => ({
         ...prev,
         time: moment() - prev.start,
-        active: true,
       }));
     }, 1000);
 
@@ -43,11 +70,14 @@ export const Timer = ({
 
   // for launching timer after creation and first render
   useEffect(() => {
-    startTimer();
+    if (timer.active) {
+      startTimer();
+    }
 
-    // for cancel the timer (setTimer) when component unmounted
+    // for cancel the timer (setTimer) when component deleted and unmounted
     return function cleanup() {
       clearInterval(intervalRef.current);
+      localStorage.removeItem(`${id}`, JSON.stringify(timer));
     };
   }, []);
 
@@ -57,9 +87,11 @@ export const Timer = ({
       ...prev,
       active: false,
     }));
+
+    updateStorage('pause');
   };
 
-  // for shoving hours in time more than 24
+  // converting time to show more than 24 hours
   const convertTime = () => {
     const seconds = moment.duration(timer.time, 'milliseconds');
     const hours = (Math.floor(seconds.asHours()) < 10)
@@ -70,32 +102,43 @@ export const Timer = ({
   };
 
   return (
-    <div className="timer">
-      <h3>
+    <div className="timer__container">
+      <h3 className="timer__header">
         {`${timer.name}: ${convertTime()}`}
       </h3>
 
       {!timer.active
       && (
         <button
+          className="timer__button"
           type="button"
           onClick={startTimer}
         >
-          <img src={playPic} alt="start" />
+          <img
+            className="timer__image"
+            src={playPic}
+            alt="start"
+          />
         </button>
       )}
 
       {timer.active
       && (
         <button
+          className="timer__button"
           type="button"
           onClick={stopTimer}
         >
-          <img src={pausePic} alt="pause" />
+          <img
+            className="timer__image"
+            src={pausePic}
+            alt="pause"
+          />
         </button>
       )}
 
       <button
+        className="timer__button"
         type="button"
         onClick={() => deleteTimer(id)}
       >
@@ -107,9 +150,6 @@ export const Timer = ({
 
 Timer.propTypes = {
   name: PropTypes.string.isRequired,
-  time: PropTypes.number.isRequired,
-  active: PropTypes.bool.isRequired,
-  start: PropTypes.number.isRequired,
   id: PropTypes.number.isRequired,
   deleteTimer: PropTypes.func.isRequired,
 };

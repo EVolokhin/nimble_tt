@@ -1,12 +1,15 @@
-.nav {
-  display: flex;
-  margin: 20px;
+@import './components/timer.scss';
 
-  * {
-    margin-right: 10px;
-  }
+*, *::before, *::after {
+  box-sizing: border-box;
 }
 
-.timer {
-  padding: 20px 20px;
+body  {
+  margin: 0;
+  padding: 0;
+}
+
+.wrapper {
+  padding-left: calc(50% - 280px);
+  padding-right: calc(50% - 280px);
 }

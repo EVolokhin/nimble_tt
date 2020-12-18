@@ -11,24 +11,20 @@ import './App.scss';
 
 export const App = () => {
   const [timersList, setTimersList] = useLocalStorage('timersList');
-  const [timerName, setTimerName] = useState('');
+  const [inputTimerName, setInputTimerName] = useState('');
 
   const handleName = (event) => {
-    setTimerName(event.target.value);
+    setInputTimerName(event.target.value);
   };
 
   const addTimer = () => {
     const newTimer = {
-      name: timerName || String(+moment()),
-      time: 0,
-      active: true,
-      start: +moment(),
-      // start: 0,
+      name: inputTimerName || String(+moment()),
       id: +moment(),
     };
 
     setTimersList([newTimer, ...timersList]);
-    setTimerName('');
+    setInputTimerName('');
   };
 
   const deleteTimer = (id) => {
@@ -47,41 +43,42 @@ export const App = () => {
   };
 
   return (
-    <div>
-      <input
-        type="text"
-        value={timerName}
-        onChange={handleName}
-        onKeyPress={onEnter}
-      />
-      <button
-        type="button"
-        onClick={addTimer}
-      >
-        <img src={addPic} alt="add timer" />
-      </button>
-
-      {timersList.map((timerObj, ind) => {
-        const {
-          name,
-          time,
-          active,
-          start,
-          id,
-        } = timerObj;
-
-        return (
-          <Timer
-            name={name}
-            time={time}
-            active={active}
-            start={start}
-            id={id}
-            deleteTimer={deleteTimer}
-            key={id}
+    <div className="wrapper">
+      <div className="timer">
+        <div className="timer__set">
+          <input
+            className="timer__name"
+            type="text"
+            placeholder="Enter tracker name"
+            value={inputTimerName}
+            onChange={handleName}
+            onKeyPress={onEnter}
           />
-        );
-      })}
+          <button
+            className="timer__add"
+            type="button"
+            onClick={addTimer}
+          >
+            <img src={addPic} alt="add timer" />
+          </button>
+        </div>
+
+        {timersList.map((timerObj) => {
+          const {
+            name,
+            id,
+          } = timerObj;
+
+          return (
+            <Timer
+              name={name}
+              id={id}
+              deleteTimer={deleteTimer}
+              key={id}
+            />
+          );
+        })}
+      </div>
     </div>
   );
 };

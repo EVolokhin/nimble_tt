@@ -1,0 +1,27 @@
+.timer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 50px;
+  width: 560px;
+
+  border: 2px solid black;
+
+  &__set {}
+  &__name {}
+  &__add {}
+  &__container {
+    background-color: yellow;
+  }
+  &__header {}
+  &__button {
+    border: none;
+    border-radius: 50%;
+    background-color: inherit;
+  }
+  &__button:focus {
+    outline: none;
+  }
+
+  &__image {}
+}
