@@ -1,25 +1,31 @@
-/* eslint-disable no-console */
-/* eslint-disable no-unused-vars */
-/* eslint-disable max-len */
-
-import React, { useState } from 'react';
+import React, { useCallback } from 'react';
 import moment from 'moment';
+import { useDispatch, useSelector } from 'react-redux';
 import { Timer } from './components/timer';
+import { selectTimers, addTimer, selectName, addName } from './store/index';
 import addPic from './style/icons/play_circle_filled-black-48dp.svg';
-import { useLocalStorage } from './components/localStorage';
 import './App.scss';
 
 export const App = () => {
-  const [timersList, setTimersList] = useLocalStorage('timersList');
-  const [inputTimerName, setInputTimerName] = useState('');
+  const timersList = useSelector(selectTimers);
+  const inputTimerName = useSelector(selectName);
+  const dispatch = useDispatch();
 
-  const handleName = (event) => {
+  const setTimersList = useCallback((timer) => {
+    dispatch(addTimer(timer));
+  }, [dispatch]);
+
+  const setInputTimerName = useCallback((val) => {
+    dispatch(addName(val));
+  }, [dispatch]);
+
+  const handleName = useCallback((event) => {
     setInputTimerName(event.target.value);
-  };
+  }, [setInputTimerName]);
 
-  const addTimer = () => {
+  const addNewTimer = () => {
     const newTimer = {
-      name: inputTimerName || String(+moment()),
+      timerName: inputTimerName || String(+moment()),
       id: +moment(),
     };
 
@@ -38,7 +44,7 @@ export const App = () => {
 
   const onEnter = (event) => {
     if (event.key === 'Enter') {
-      addTimer();
+      addNewTimer();
     }
   };
 
@@ -57,7 +63,7 @@ export const App = () => {
           <button
             className="timer__add"
             type="button"
-            onClick={addTimer}
+            onClick={addNewTimer}
           >
             <img src={addPic} alt="add timer" />
           </button>
@@ -65,13 +71,13 @@ export const App = () => {
 
         {timersList.map((timerObj) => {
           const {
-            name,
+            timerName,
             id,
           } = timerObj;
 
           return (
             <Timer
-              name={name}
+              timerName={timerName}
               id={id}
               deleteTimer={deleteTimer}
               key={id}

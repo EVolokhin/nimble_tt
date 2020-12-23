@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 
@@ -9,7 +9,7 @@ import deletePic from '../style/icons/highlight_off-black-48dp.svg';
 import './timer.scss';
 
 export const Timer = ({
-  name,
+  timerName,
   id,
   deleteTimer,
 }) => {
@@ -19,7 +19,7 @@ export const Timer = ({
   const initialValue = localStorage.getItem(`${id}`)
     ? JSON.parse(localStorage.getItem(`${id}`))
     : {
-      name,
+      timerName,
       time: 0,
       active: true,
       start: +moment(),
@@ -32,13 +32,13 @@ export const Timer = ({
   const intervalRef = useRef();
 
   // updating localStorage when timer buttons play/pause onClick
-  const updateStorage = (key) => {
+  const updateStorage = useCallback((key) => {
     const udpadeTimer = { ...timer };
 
     (key === 'play') ? udpadeTimer.active = true : udpadeTimer.active = false;
 
     localStorage.setItem(`${id}`, JSON.stringify(udpadeTimer));
-  };
+  }, [timer]);
 
   const startTimer = () => {
     setTimer((prev) => {
@@ -109,7 +109,7 @@ export const Timer = ({
   return (
     <div className={classContainer}>
       <h3 className="timer__header">
-        <span className="timer__title">{timer.name}</span>
+        <span className="timer__title">{timer.timerName}</span>
         <span>{convertTime()}</span>
       </h3>
 
@@ -155,7 +155,7 @@ export const Timer = ({
 };
 
 Timer.propTypes = {
-  name: PropTypes.string.isRequired,
+  timerName: PropTypes.string.isRequired,
   id: PropTypes.number.isRequired,
   deleteTimer: PropTypes.func.isRequired,
 };

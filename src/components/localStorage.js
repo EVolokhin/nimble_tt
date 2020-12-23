@@ -1,19 +1,12 @@
-import { useState } from 'react';
-
-export const useLocalStorage = (key) => {
-  let initialValue = localStorage.getItem(key)
-    ? JSON.parse(localStorage.getItem(key))
+export const loadedState = (() => {
+  const initialValue = localStorage.getItem('timersList')
+    ? JSON.parse(localStorage.getItem('timersList'))
     : [];
 
-  localStorage.setItem(key, JSON.stringify(initialValue));
+  localStorage.setItem('timersList', JSON.stringify(initialValue));
 
-  const [value, setValue] = useState(initialValue);
-
-  const addValue = (newValue) => {
-    setValue(newValue);
-    initialValue = newValue;
-    localStorage.setItem(key, JSON.stringify(initialValue));
+  return {
+    timersList: initialValue,
+    inputTimerName: '',
   };
-
-  return [value, addValue];
-};
+})();

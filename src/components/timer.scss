@@ -108,23 +108,25 @@
     &__container {
       display: flex;
       align-items: center;
-      padding: 10px 10px;
+      justify-content: space-around;
+      justify-items: center;
+      padding: 0 5px;
       margin: 0;
       width: 85vw;
     }
 
     &__header {
       margin: 0;
+      width: 60%;
     }
 
     &__title {
       transform: scale(0.85);
       margin: 0;
-      width: 100px;
     } 
 
     &__button {
-      transform: scale(0.85);
+      transform: scale(0.95);
       margin: 0;
     }
   }
